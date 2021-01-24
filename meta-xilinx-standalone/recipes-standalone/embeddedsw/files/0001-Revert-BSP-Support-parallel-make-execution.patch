@@ -1,0 +1,923 @@
+From de5a825710aae31b87bd5805b4639358dcc7e2bb Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 12:45:35 -0600
+Subject: [PATCH] Revert "BSP: Support parallel make execution"
+
+This reverts commit 3afd984cd86b899d97be238603ba886b20eb844d.
+---
+ .../src/arm/ARMv8/32bit/gcc/Makefile          | 54 ++++------------
+ .../src/arm/ARMv8/64bit/armclang/Makefile     | 57 ++++++-----------
+ .../src/arm/ARMv8/64bit/gcc/Makefile          | 64 ++++---------------
+ .../src/arm/cortexa9/armcc/Makefile           | 57 ++++++-----------
+ .../standalone/src/arm/cortexa9/gcc/Makefile  | 47 ++++----------
+ .../src/arm/cortexa9/iccarm/Makefile          | 41 ++++++------
+ .../src/arm/cortexr5/armclang/Makefile        | 59 ++++++-----------
+ .../standalone/src/arm/cortexr5/gcc/Makefile  | 57 ++++-------------
+ .../src/arm/cortexr5/iccarm/Makefile          | 44 ++++++-------
+ lib/bsp/standalone/src/microblaze/Makefile    | 51 ++++-----------
+ 10 files changed, 171 insertions(+), 360 deletions(-)
+
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+index 097365cfa3..672917c587 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2015 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -22,54 +21,29 @@ ECC_FLAGS_NO_FLTO1 = $(subst -flto,,$(ECC_FLAGS))
+ ECC_FLAGS_NO_FLTO = $(subst -ffat-lto-objects,,$(ECC_FLAGS_NO_FLTO1))
+ 
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out _exit.c, $(wildcard *.c)))))
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-NON_LTO_OBJECTS = $(addprefix $(RELEASEDIR),$(addsuffix .o,$(basename _exit.c)))
+-
++OUTS = *.o
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ INCLUDEFILES=*.h
+ INCLUDEFILES+=includes_ps/*.h
+-libs: $(LIBS)
+-
+-standalone_libs:  $(OBJECTS) $(ASSEMBLY_OBJECTS) $(NON_LTO_OBJECTS)
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
+-$(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++libs: $(LIBS) clean
+ 
+-$(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++standalone_libs: $(LIBSOURCES)
++	echo "Compiling standalone"
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(filter-out _exit.c, $^)
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES) _exit.c
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+-
+-
+-
+-$(INCLUDEDIR)%.h: includes_ps/%.h
+-	$(CP) $< $@
+-
+-
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+ 	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+-	rm -rf $(NON_LTO_OBJECTS)
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile b/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
+index eeb265ea35..165a81bcc6 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2019 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -18,20 +17,17 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+ INCLUDEFILES=*.h
+ 
+-SRCFILES:=$(wildcard *.c)
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+-COBJS	=	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-AOBJS1	=	$(RELEASEDIR)/asm_vectors.o
+-AOBJS2	=	$(RELEASEDIR)/translation_table.o
+-AOBJS3	=	$(RELEASEDIR)/boot.o
++COBJS	=	$(addsuffix .o, $(basename $(wildcard *.c)))
++AOBJS1	=	asm_vectors.o
++AOBJS2	=	translation_table.o
++AOBJS3	=	boot.o
+ OBJS    =	$(COBJS) $(AOBJS1) $(AOBJS2) $(AOBJS3)
+ 
+ ASOURCES1 = asm_vectors.S
+@@ -40,53 +36,40 @@ ASOURCES3 = boot.S
+ 
+ OBJECTS = $(OBJS)
+ 
+-libs: standalone_libs
+-standalone_libs: ${OBJECTS}
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
++libs: banner standalone_libs clean
+ 
+ $(AOBJS1): $(ASOURCES1)
+ ifeq ($(findstring asm_vectors.S,$(wildcard *.S)),asm_vectors.S)
+ 	${COMPILER} $(INCLUDES) --target=aarch64-arm-none-eabi -E -o asm_vectors_post.s asm_vectors.S
+ endif
+-	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o  $*.o  asm_vectors_post.s --depend=$*.d
++	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o asm_vectors.o asm_vectors_post.s
+ 
+ $(AOBJS2): $(ASOURCES2)
+ ifeq ($(findstring translation_table.S,$(wildcard *.S)),translation_table.S)
+ 	${COMPILER} $(INCLUDES) --target=aarch64-arm-none-eabi -E -o translation_table_post.s translation_table.S
+ endif
+-	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o $*.o  translation_table_post.s --depend=$*.d
++	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o translation_table.o translation_table_post.s
+ 
+ $(AOBJS3): $(ASOURCES3)
+ ifeq ($(findstring boot.S,$(wildcard *.S)),boot.S)
+ 	${COMPILER} $(INCLUDES) --target=aarch64-arm-none-eabi -E -o boot_post.s boot.S
+ endif
+-	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o $*.o boot_post.s --depend=$*.d
+-
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-.PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
++	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o boot.o boot_post.s
+ 
++%.o: %.c
++	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
++banner:
++	echo "Compiling standalone"
+ 
+-$(INCLUDEDIR)%.h: includes_ps/%.h
+-	$(CP) $< $@
++standalone_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
++.PHONY: include
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile b/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
+index 0f65e277ae..c767933913 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
+@@ -2,8 +2,6 @@
+ # Copyright (c) 2014 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+-
+ include config.make
+ 
+ CC=$(COMPILER)
+@@ -21,64 +19,30 @@ ECC_FLAGS_NO_FLTO1 = $(subst -flto,,$(ECC_FLAGS))
+ ECC_FLAGS_NO_FLTO = $(subst -ffat-lto-objects,,$(ECC_FLAGS_NO_FLTO1))
+ 
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out _exit.c, $(wildcard *.c)))))
+-
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-
+-EXIT_OBJ = $(addprefix $(RELEASEDIR),$(addsuffix .o,$(basename _exit.c)))
+-
+ 
++OUTS = *.o
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ INCLUDEFILES=*.h
+ INCLUDEFILES+=includes_ps/*.h
+-libs: $(LIBS)
+-
+-
+-standalone_libs: $(OBJECTS) $(ASSEMBLY_OBJECTS) $(EXIT_OBJ)
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
+-
+-$(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++libs: $(LIBS) clean
+ 
++standalone_libs: $(LIBSOURCES)
++	echo "Compiling standalone ARMv8 64 bit"
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(filter-out _exit.c, $^)
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES) _exit.c
++	$(AR) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+-
+-
+-
+-$(INCLUDEDIR)%.h: includes_ps/%.h
+-	$(CP) $< $@
+-
+-
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+ 	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+-	rm -rf $(EXIT_OBJ)
+diff --git a/lib/bsp/standalone/src/arm/cortexa9/armcc/Makefile b/lib/bsp/standalone/src/arm/cortexa9/armcc/Makefile
+index 858d3cecda..2cd76c7ee2 100644
+--- a/lib/bsp/standalone/src/arm/cortexa9/armcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexa9/armcc/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2011 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = 1.0
+ 
+ include config.make
+ 
+@@ -20,20 +19,17 @@ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+ ECC_FLAGS	+= --cpu=Cortex-A9 --fpu=VFPv3_FP16 --vectorize
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+ INCLUDEFILES=*.h
+ 
+-COBJS	=	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-AOBJS1	=	$(RELEASEDIR)asm_vectors.o
+-AOBJS2	=	$(RELEASEDIR)translation_table.o
+-OBJS    = $(COBJS) $(AOBJS1) $(AOBJS2) $(RELEASEDIR)boot.o
++COBJS	=	$(addsuffix .o, $(basename $(wildcard *.c)))
++AOBJS1	=	asm_vectors.o
++AOBJS2	=	translation_table.o
++OBJS    = $(COBJS) $(AOBJS1) $(AOBJS2) boot_post.o
+ 
+ ASOURCES1 = asm_vectors.s
+ ASOURCES2 = translation_table.s
+@@ -41,46 +37,35 @@ ASOURCES2 = translation_table.s
+ # Replace boot.o with boot_post.o
+ OBJECTS = $(OBJS)
+ 
+-libs: $(LIBS)
+-standalone_libs: $(OBJS)
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
++libs: boot_libs banner $(LIBS) clean
+ 
+-include $(wildcard ../../../../dep.mk)
+-
+-$(RELEASEDIR)boot.o: boot.S
++boot_libs:
+ ifeq ($(findstring boot.S,$(wildcard *.S)),boot.S)
+ 	${COMPILER} $(INCLUDES) -E -o boot_post.s boot.S
+ endif
+-
+-	${AS} --cpu=Cortex-A9 --fpu=VFPv3 -o $*.o  boot_post.s --depend=$*.d
++	${AS} --cpu=Cortex-A9 --fpu=VFPv3 -o boot_post.o boot_post.s
++	rm -f boot.S
+ 
+ $(AOBJS1): $(ASOURCES1)
+-
+-	${AS} --cpu=Cortex-A9 --fpu=VFPv3 --depend=$*.d $< -o $@
++	${AS} --cpu=Cortex-A9 --fpu=VFPv3 -o $@ $<
+ 
+ $(AOBJS2): $(ASOURCES2)
++	${AS} --cpu=Cortex-A9 --fpu=VFPv3 -o $@ $<
+ 
+-	${AS} --cpu=Cortex-A9 --fpu=VFPv3 --depend=$*.d $< -o $@
+-
+-$(RELEASEDIR)%.o: %.c
++%.o: %.c
++	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++banner:
++	echo "Compiling standalone"
+ 
++standalone_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+diff --git a/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile b/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
+index 75b1febe75..82ee436986 100644
+--- a/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2011 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -27,39 +26,21 @@ ifeq (($(notdir $(CC))) , arm-none-eabi-gcc)
+ ECC_FLAGS	+= -nostartfiles
+ endif
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-
++OUTS = *.o
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ INCLUDEFILES=*.h
+ 
+-libs: $(LIBS)
+-
+-standalone_libs: $(OBJECTS) $(ASSEMBLY_OBJECTS)
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
++libs: $(LIBS) clean
+ 
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
+-
+-$(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++standalone_libs: $(LIBSOURCES)
++	echo "Compiling standalone"
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $^
++	$(AR) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+ 
+ profile_libs:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" libs
+@@ -67,10 +48,8 @@ profile_libs:
+ .PHONY: include
+ include: standalone_includes profile_includes
+ 
+-standalone_includes: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+-
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ profile_includes:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" include
+@@ -78,6 +57,4 @@ profile_includes:
+ clean:
+ 	rm -rf ${OBJECTS}
+ 	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" clean
+diff --git a/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile b/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
+index 9e3cf6ee12..cc64139483 100644
+--- a/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2011 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -20,37 +19,41 @@ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+ ECC_FLAGS	+= --fpu=VFPv3
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+ INCLUDEFILES=*.h
+ 
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-OBJECTS +=	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.s))))
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++OBJECTS +=	$(addsuffix .o, $(basename $(wildcard *.s)))
++#OBJECTS +=	boot.o
+ 
+-libs: $(LIBS)
+-standalone_libs: ${OBJECTS}
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
++libs: banner $(LIBS) clean
+ 
+-include $(wildcard ../../../../dep.mk)
++#boot.s: boot.S
++#	${COMPILER} $(INCLUDES) -E -o $@ $<
++#	rm -f boot.S
+ 
+-$(RELEASEDIR)%.o: %.s
++%.o: %.s
+ 	${AS} --cpu Cortex-A9 --fpu VFPv3 $(INCLUDES) -o $@ $<
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
++banner:
++	echo "Compiling standalone"
++	echo "${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<"
++
++standalone_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include:  $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++include: standalone_includes
++
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+index b704f27a3a..be15b5ba20 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+@@ -4,7 +4,6 @@
+ # SPDX-License-Identifier: MIT
+ #
+ ##############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -20,22 +19,18 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+ INCLUDEFILES=*.h
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+-COBJS	=	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-AOBJS1	=	$(RELEASEDIR)/asm_vectors.o
+-AOBJS2	=	$(RELEASEDIR)/boot.o
+-AOBJS3	=	$(RELEASEDIR)/xil-crt0.o
+-AOBJS4	=	$(RELEASEDIR)/cpu_init.o
++COBJS	=	$(addsuffix .o, $(basename $(wildcard *.c)))
++AOBJS1	=	asm_vectors.o
++AOBJS2	=	boot.o
++AOBJS3	=	xil-crt0.o
++AOBJS4	=	cpu_init.o
+ OBJS    =	$(COBJS) $(AOBJS1) $(AOBJS2) $(AOBJS3) $(AOBJS4)
+ 
+ ASOURCES1 = asm_vectors.S
+@@ -45,60 +40,46 @@ ASOURCES4 = cpu_init.S
+ 
+ OBJECTS = $(OBJS)
+ 
+-libs: standalone_libs
+-
+-standalone_libs: ${OBJECTS}
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
++libs: banner standalone_libs clean
+ 
+ $(AOBJS1): $(ASOURCES1)
+ ifeq ($(findstring asm_vectors.S,$(wildcard *.S)),asm_vectors.S)
+ 	${COMPILER} $(INCLUDES) --target=arm-arm-none-eabi -E -o asm_vectors_post.s asm_vectors.S
+ endif
+-	${AS} --cpu=Cortex-R5 -o $*.o asm_vectors_post.s --depend=$*.d
++	${AS} --cpu=Cortex-R5 -o asm_vectors.o asm_vectors_post.s
+ 
+ $(AOBJS2): $(ASOURCES2)
+ ifeq ($(findstring boot.S,$(wildcard *.S)),boot.S)
+ 	${COMPILER} $(INCLUDES) --target=arm-arm-none-eabi -E -o boot_post.s boot.S
+ endif
+-	${AS} --cpu=Cortex-R5 -o $*.o boot_post.s --depend=$*.d
++	${AS} --cpu=Cortex-R5 -o boot.o boot_post.s
+ 
+ $(AOBJS3): $(ASOURCES3)
+ ifeq ($(findstring xil-crt0.S,$(wildcard *.S)),xil-crt0.S)
+ 	${COMPILER} $(INCLUDES) --target=arm-arm-none-eabi -E -o xil-crt0_post.s xil-crt0.S
+ endif
+-	${AS} --cpu=Cortex-R5 -o $*.o xil-crt0_post.s --depend=$*.d
++	${AS} --cpu=Cortex-R5 -o xil-crt0.o xil-crt0_post.s
+ 
+ $(AOBJS4): $(ASOURCES4)
+ ifeq ($(findstring cpu_init.S,$(wildcard *.S)),cpu_init.S)
+ 	${COMPILER} $(INCLUDES) --target=arm-arm-none-eabi -E -o cpu_init_post.s cpu_init.S
+ endif
+-	${AS} --cpu=Cortex-R5 -o $*.o cpu_init_post.s --depend=$*.d
++	${AS} --cpu=Cortex-R5 -o cpu_init.o cpu_init_post.s
+ 
+ %.o: %.c
+ 	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-.PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+-
++banner:
++	echo "Compiling standalone"
+ 
++standalone_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+-$(INCLUDEDIR)%.h: includes_ps/%.h
+-	$(CP) $< $@
+-
++.PHONY: include
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+index 23e54ae1c1..7b9afdaf27 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2014 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ CC=$(COMPILER)
+@@ -22,58 +21,30 @@ ECC_FLAGS_NO_FLTO1 = $(subst -flto,,$(ECC_FLAGS))
+ ECC_FLAGS_NO_FLTO = $(subst -ffat-lto-objects,,$(ECC_FLAGS_NO_FLTO1))
+ 
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out _exit.c, $(wildcard *.c)))))
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-
+-NON_LTO_OBJECTS = $(addprefix $(RELEASEDIR),$(addsuffix .o,$(basename _exit.c)))
+-
++OUTS = *.o
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ INCLUDEFILES=*.h
+ INCLUDEFILES+=includes_ps/*.h
+ 
+-libs: $(LIBS)
+-
+-standalone_libs: $(OBJECTS) $(ASSEMBLY_OBJECTS) $(NON_LTO_OBJECTS)
+-
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
+-
+-$(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++libs: $(LIBS) clean
+ 
++standalone_libs: $(LIBSOURCES)
++	echo "Compiling standalone R5"
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(filter-out _exit.c, $^)
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES) _exit.c
++	$(AR) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+-
+-
+-
+-$(INCLUDEDIR)%.h: includes_ps/%.h
+-	$(CP) $< $@
+-
+-
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+ 	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+-	rm -rf $(NON_LTO_OBJECTS)
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile b/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
+index c21c81d435..decc4df12e 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2011 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ include config.make
+ 
+@@ -18,42 +17,41 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+ INCLUDEFILES=*.h
+ 
+-SRCFILES:=$(wildcard *.c)
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++OBJECTS +=	$(addsuffix .o, $(basename $(wildcard *.s)))
++#OBJECTS +=	boot.o
+ 
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
++libs: banner $(LIBS) clean
+ 
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
++#boot.s: boot.S
++#	${COMPILER} $(INCLUDES) -E -o $@ $<
++#	rm -f boot.S
+ 
++%.o: %.s
++	${AS} --cpu Cortex-R5 --fpu VFPv3_D16 $(INCLUDES) -o $@ $<
+ 
+-libs: $(LIBS)
+-standalone_libs: ${OBJECTS} ${ASSEMBLY_OBJECTS}
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-$(RELEASEDIR)%.o: %.s
+-	${AS} --cpu Cortex-R5 --fpu VFPv3_D16 $(INCLUDES) -o $@ $<
++banner:
++	echo "Compiling standalone"
++	echo "${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<"
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++standalone_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: standalone_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf $(DEPFILES)
+diff --git a/lib/bsp/standalone/src/microblaze/Makefile b/lib/bsp/standalone/src/microblaze/Makefile
+index 2229f07654..8657a29e7d 100644
+--- a/lib/bsp/standalone/src/microblaze/Makefile
++++ b/lib/bsp/standalone/src/microblaze/Makefile
+@@ -2,7 +2,6 @@
+ # Copyright (c) 2012 - 2020 Xilinx, Inc.  All rights reserved.
+ # SPDX-License-Identifier: MIT
+ ###############################################################################
+-DRIVER_LIB_VERSION = v1.0
+ 
+ # The following are defined in config.make
+ # LIBSOURCES - Based on if MicroBlaze support Exceptions
+@@ -20,55 +19,34 @@ LIB=libxil.a
+ CC_FLAGS = $(subst -pg, , $(COMPILER_FLAGS))
+ ECC_FLAGS = $(subst -pg, , $(EXTRA_COMPILER_FLAGS))
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out $(wildcard microblaze_interrupt_handler.c), $(wildcard *.c)))))
+-
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-
+-NON_LTO_OBJECTS = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard microblaze_interrupt_handler.c))))
+-
++OUTS = *.o
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
++ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ NON_LTO_FILES = $(wildcard microblaze_interrupt_handler.c)
+ INCLUDEFILES=*.h
+ 
+ ECC_FLAGS_NO_FLTO1 = $(subst -flto,,$(ECC_FLAGS))
+ ECC_FLAGS_NO_FLTO = $(subst -ffat-lto-objects,,$(ECC_FLAGS_NO_FLTO1))
+ 
+-libs: $(LIBS)
+-
+-standalone_libs: $(OBJECTS) $(ASSEMBLY_OBJECTS) $(NON_LTO_OBJECTS)
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+-
+-include $(wildcard $(DEPFILES))
+-
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=$(RELEASEDIR)%.d)
++libs: $(LIBS) clean
+ 
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+-
+-include $(wildcard ../../../../dep.mk)
+-
+-$(NON_LTO_OBJECTS): $(NON_LTO_FILES)
+-	echo "DEBUG NON_LTO_OBJECTS is $(NON_LTO_OBJECTS)"
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-$(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++standalone_libs: $(LIBSOURCES)
++	echo "Compiling standalone";
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(filter-out $(NON_LTO_FILES), $^)
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES) $(NON_LTO_FILES)
++	$(AR) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+ 
+ profile_libs:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" AS="$(AS)" libs
+ 
+ include: standalone_includes profile_includes
+ 
+-standalone_includes: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+-
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
+-
++standalone_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ profile_includes:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" AS="$(AS)" include
+@@ -76,7 +54,4 @@ profile_includes:
+ clean:
+ 	rm -rf ${OBJECTS}
+ 	rm -rf ${ASSEMBLY_OBJECTS}
+-	rm -rf ${NON_LTO_OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" AS="$(AS)" clean
+-- 
+2.17.1
+

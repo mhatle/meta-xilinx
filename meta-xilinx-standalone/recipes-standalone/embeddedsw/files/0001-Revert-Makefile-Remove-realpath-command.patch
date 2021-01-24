@@ -1,0 +1,2391 @@
+From 4f2a94381764314285fcfa188e90c0880e0abd26 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:17:23 -0600
+Subject: [PATCH] Revert "Makefile: Remove realpath command"
+
+This reverts commit 4dc85994d6fbffba6962a1ce441c9ff41ed85cc7.
+---
+ .../bsp/freertos10_xilinx/src/Makefile_microblaze    |  4 ++--
+ .../bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9  |  4 ++--
+ .../bsp/freertos10_xilinx/src/Makefile_psu_cortexa53 |  4 ++--
+ .../bsp/freertos10_xilinx/src/Makefile_psu_cortexr5  |  4 ++--
+ .../drivers/audio_formatter/src/Makefile             |  2 +-
+ XilinxProcessorIPLib/drivers/axicdma/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/axidma/src/Makefile     |  2 +-
+ .../drivers/axiethernet/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/axipcie/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/axipmon/src/Makefile    |  2 +-
+ .../drivers/axis_switch/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/axivdma/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/bram/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/can/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/canfd/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/canps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/cframe/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/cfupmc/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/clk_wiz/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/clockps/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/common/src/Makefile     |  2 +-
+ .../drivers/coresightps_dcc/src/Makefile             |  2 +-
+ XilinxProcessorIPLib/drivers/cpu/src/Makefile        |  2 +-
+ .../drivers/cpu_cortexa53/src/Makefile               |  2 +-
+ .../drivers/cpu_cortexa72/src/Makefile               |  2 +-
+ .../drivers/cpu_cortexa9/src/Makefile                |  2 +-
+ .../drivers/cpu_cortexr5/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/csi/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/csi2tx/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/csi2txss/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/csudma/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/ddrcpsu/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/ddrps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/ddrpsv/src/Makefile     |  2 +-
+ .../drivers/deinterlacer/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/devcfg/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/dfxasm/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/dmaps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/dp12/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/dp12rxss/src/Makefile   |  8 ++++----
+ XilinxProcessorIPLib/drivers/dp12txss/src/Makefile   | 10 +++++-----
+ XilinxProcessorIPLib/drivers/dp14/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/dp14rxss/src/Makefile   | 10 +++++-----
+ XilinxProcessorIPLib/drivers/dp14txss/src/Makefile   | 12 ++++++------
+ XilinxProcessorIPLib/drivers/dphy/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/dsi/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/dsitxss/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/emaclite/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/emacps/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/gpio/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/gpiops/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/hdcp1x/src/Makefile     |  2 +-
+ .../drivers/hdcp22_cipher/src/Makefile               |  2 +-
+ .../drivers/hdcp22_cipher_dp/src/Makefile            |  2 +-
+ .../drivers/hdcp22_common/src/Makefile               |  2 +-
+ .../drivers/hdcp22_mmult/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/hdcp22_rng/src/Makefile |  2 +-
+ XilinxProcessorIPLib/drivers/hdcp22_rx/src/Makefile  |  2 +-
+ .../drivers/hdcp22_rx_dp/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/hdcp22_tx/src/Makefile  |  2 +-
+ .../drivers/hdcp22_tx_dp/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/hwicap/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/i2srx/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/i2stx/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/iic/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/iicps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/intc/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/iomodule/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/ipipsu/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/llfifo/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/mbox/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/mcdma/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/mipicsiss/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/mpegtsmux/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/mutex/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/nandps/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/nandpsu/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/ospipsv/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/pciepsu/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/pmonpsv/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/prc/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/prd/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/qspips/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/qspipsu/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/resetps/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/rfdc/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/rtcpsu/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/scugic/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/scutimer/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/scuwdt/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/sdi_common/src/Makefile |  2 +-
+ XilinxProcessorIPLib/drivers/sdiaud/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/sdps/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/spi/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/spips/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/srio/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/sysmon/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/sysmonpsu/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/sysmonpsv/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/tft/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/tmr_inject/src/Makefile |  2 +-
+ .../drivers/tmr_manager/src/Makefile                 |  4 ++--
+ XilinxProcessorIPLib/drivers/tmrctr/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/trafgen/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/ttcps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/uartlite/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/uartns550/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/uartps/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/uartpsv/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/usb/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/usbps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/usbpsu/src/Makefile     |  2 +-
+ .../drivers/v_axi4s_remap/src/Makefile               |  2 +-
+ XilinxProcessorIPLib/drivers/v_csc/src/Makefile      |  2 +-
+ .../drivers/v_deinterlacer/src/Makefile              |  2 +-
+ XilinxProcessorIPLib/drivers/v_demosaic/src/Makefile |  2 +-
+ .../drivers/v_frmbuf_rd/src/Makefile                 |  2 +-
+ .../drivers/v_frmbuf_wr/src/Makefile                 |  2 +-
+ .../drivers/v_gamma_lut/src/Makefile                 |  2 +-
+ .../drivers/v_hcresampler/src/Makefile               |  2 +-
+ .../drivers/v_hdmi_common/src/Makefile               |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmiphy1/src/Makefile |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmirx/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmirx1/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmirxss/src/Makefile |  2 +-
+ .../drivers/v_hdmirxss1/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmitx/src/Makefile   |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmitx1/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/v_hdmitxss/src/Makefile |  2 +-
+ .../drivers/v_hdmitxss1/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/v_hscaler/src/Makefile  |  2 +-
+ .../drivers/v_letterbox/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/v_mix/src/Makefile      |  2 +-
+ .../drivers/v_multi_scaler/src/Makefile              |  2 +-
+ .../drivers/v_scenechange/src/Makefile               |  2 +-
+ XilinxProcessorIPLib/drivers/v_sdirx/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/v_sdirxss/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/v_sditx/src/Makefile    |  2 +-
+ XilinxProcessorIPLib/drivers/v_sditxss/src/Makefile  |  2 +-
+ XilinxProcessorIPLib/drivers/v_tpg/src/Makefile      |  2 +-
+ .../drivers/v_vcresampler/src/Makefile               |  2 +-
+ XilinxProcessorIPLib/drivers/v_vscaler/src/Makefile  |  2 +-
+ .../drivers/video_common/src/Makefile                |  2 +-
+ XilinxProcessorIPLib/drivers/vphy/src/Makefile       |  2 +-
+ XilinxProcessorIPLib/drivers/vprocss/src/Makefile    |  4 ++--
+ XilinxProcessorIPLib/drivers/vtc/src/Makefile        |  2 +-
+ XilinxProcessorIPLib/drivers/wdtps/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/wdttb/src/Makefile      |  2 +-
+ XilinxProcessorIPLib/drivers/xadcps/src/Makefile     |  2 +-
+ XilinxProcessorIPLib/drivers/xdmapcie/src/Makefile   |  2 +-
+ .../drivers/xxvethernet/src/Makefile                 |  2 +-
+ XilinxProcessorIPLib/drivers/zdma/src/Makefile       |  2 +-
+ lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile  |  6 +++---
+ .../standalone/src/arm/ARMv8/64bit/armclang/Makefile |  2 +-
+ lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile  |  6 +++---
+ lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile     |  4 ++--
+ .../standalone/src/arm/cortexr5/armclang/Makefile    |  2 +-
+ lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile     |  6 +++---
+ lib/bsp/standalone/src/microblaze/Makefile           |  6 +++---
+ lib/sw_services/xilffs/src/Makefile                  |  2 +-
+ lib/sw_services/xilfpga/src/Makefile                 |  2 +-
+ 161 files changed, 192 insertions(+), 192 deletions(-)
+
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
+index ceba66e4b2..4b53ef83ca 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
+@@ -101,10 +101,10 @@ include $(wildcard ../../../../dep.mk)
+ 
+ 
+ %.o: %.S
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ %.o: %.c
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: freertos_include include_standalone
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
+index 007ac53e5a..b86fbfa851 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
+@@ -100,11 +100,11 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ %.o: %.S
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ 
+ %.o: %.c
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: freertos_include include_standalone
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
+index 07fde01c54..3d8002850b 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
+@@ -108,9 +108,9 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ %.o: %.S
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ %.o: %.c
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: freertos_include include_standalone
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
+index 4d15a7c748..4b59f94592 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
+@@ -110,11 +110,11 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ %.o: %.S
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ 
+ %.o: %.c
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: freertos_include include_standalone
+diff --git a/XilinxProcessorIPLib/drivers/audio_formatter/src/Makefile b/XilinxProcessorIPLib/drivers/audio_formatter/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/audio_formatter/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/audio_formatter/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axicdma/src/Makefile b/XilinxProcessorIPLib/drivers/axicdma/src/Makefile
+index 1aa48720d7..58b661e3f3 100644
+--- a/XilinxProcessorIPLib/drivers/axicdma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axicdma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axidma/src/Makefile b/XilinxProcessorIPLib/drivers/axidma/src/Makefile
+index bffa2f8e87..32e69edc34 100644
+--- a/XilinxProcessorIPLib/drivers/axidma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axidma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axiethernet/src/Makefile b/XilinxProcessorIPLib/drivers/axiethernet/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/axiethernet/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axiethernet/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axipcie/src/Makefile b/XilinxProcessorIPLib/drivers/axipcie/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/axipcie/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axipcie/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axipmon/src/Makefile b/XilinxProcessorIPLib/drivers/axipmon/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/axipmon/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axipmon/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axis_switch/src/Makefile b/XilinxProcessorIPLib/drivers/axis_switch/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/axis_switch/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axis_switch/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/axivdma/src/Makefile b/XilinxProcessorIPLib/drivers/axivdma/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/axivdma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axivdma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/bram/src/Makefile b/XilinxProcessorIPLib/drivers/bram/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/bram/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/bram/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/can/src/Makefile b/XilinxProcessorIPLib/drivers/can/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/can/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/can/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/canfd/src/Makefile b/XilinxProcessorIPLib/drivers/canfd/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/canfd/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/canfd/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/canps/src/Makefile b/XilinxProcessorIPLib/drivers/canps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/canps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/canps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cframe/src/Makefile b/XilinxProcessorIPLib/drivers/cframe/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/cframe/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cframe/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cfupmc/src/Makefile b/XilinxProcessorIPLib/drivers/cfupmc/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/cfupmc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cfupmc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/clk_wiz/src/Makefile b/XilinxProcessorIPLib/drivers/clk_wiz/src/Makefile
+index be5fccbf83..a187d897f4 100644
+--- a/XilinxProcessorIPLib/drivers/clk_wiz/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/clk_wiz/src/Makefile
+@@ -28,7 +28,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/clockps/src/Makefile b/XilinxProcessorIPLib/drivers/clockps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/clockps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/clockps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/common/src/Makefile b/XilinxProcessorIPLib/drivers/common/src/Makefile
+index a8b0f0747c..a522d05abc 100644
+--- a/XilinxProcessorIPLib/drivers/common/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/common/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard xbasic_types.h) $(wildcard xenv.h) $(wildcard xenv_none.h) $(wildcard xenv_standalone.h) $(wildcard xenv_vxworks.h) $(wildcard xstatus.h) $(wildcard xutil.h) $(wildcard xversion.h) $(wildcard xdebug.h))
+diff --git a/XilinxProcessorIPLib/drivers/coresightps_dcc/src/Makefile b/XilinxProcessorIPLib/drivers/coresightps_dcc/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/coresightps_dcc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/coresightps_dcc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cpu/src/Makefile b/XilinxProcessorIPLib/drivers/cpu/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/cpu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cpu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cpu_cortexa53/src/Makefile b/XilinxProcessorIPLib/drivers/cpu_cortexa53/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/cpu_cortexa53/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cpu_cortexa53/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cpu_cortexa72/src/Makefile b/XilinxProcessorIPLib/drivers/cpu_cortexa72/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/cpu_cortexa72/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cpu_cortexa72/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cpu_cortexa9/src/Makefile b/XilinxProcessorIPLib/drivers/cpu_cortexa9/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/cpu_cortexa9/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cpu_cortexa9/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/cpu_cortexr5/src/Makefile b/XilinxProcessorIPLib/drivers/cpu_cortexr5/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/cpu_cortexr5/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/cpu_cortexr5/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/csi/src/Makefile b/XilinxProcessorIPLib/drivers/csi/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/csi/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/csi/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/csi2tx/src/Makefile b/XilinxProcessorIPLib/drivers/csi2tx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/csi2tx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/csi2tx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/csi2txss/src/Makefile b/XilinxProcessorIPLib/drivers/csi2txss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/csi2txss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/csi2txss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/csudma/src/Makefile b/XilinxProcessorIPLib/drivers/csudma/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/csudma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/csudma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ddrcpsu/src/Makefile b/XilinxProcessorIPLib/drivers/ddrcpsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100755
+--- a/XilinxProcessorIPLib/drivers/ddrcpsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ddrcpsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ddrps/src/Makefile b/XilinxProcessorIPLib/drivers/ddrps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/ddrps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ddrps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ddrpsv/src/Makefile b/XilinxProcessorIPLib/drivers/ddrpsv/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/ddrpsv/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ddrpsv/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/deinterlacer/src/Makefile b/XilinxProcessorIPLib/drivers/deinterlacer/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/deinterlacer/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/deinterlacer/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/devcfg/src/Makefile b/XilinxProcessorIPLib/drivers/devcfg/src/Makefile
+index 6bb6c184a0..9382e5b62e 100644
+--- a/XilinxProcessorIPLib/drivers/devcfg/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/devcfg/src/Makefile
+@@ -24,7 +24,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dfxasm/src/Makefile b/XilinxProcessorIPLib/drivers/dfxasm/src/Makefile
+index 6bb6c184a0..9382e5b62e 100644
+--- a/XilinxProcessorIPLib/drivers/dfxasm/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dfxasm/src/Makefile
+@@ -24,7 +24,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dmaps/src/Makefile b/XilinxProcessorIPLib/drivers/dmaps/src/Makefile
+index be5fccbf83..a187d897f4 100644
+--- a/XilinxProcessorIPLib/drivers/dmaps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dmaps/src/Makefile
+@@ -28,7 +28,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dp12/src/Makefile b/XilinxProcessorIPLib/drivers/dp12/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/dp12/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp12/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dp12rxss/src/Makefile b/XilinxProcessorIPLib/drivers/dp12rxss/src/Makefile
+index 640fec98c7..ba9e901d76 100644
+--- a/XilinxProcessorIPLib/drivers/dp12rxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp12rxss/src/Makefile
+@@ -28,16 +28,16 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: ./dp/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./iic/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp1x/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst dp/,,$(wildcard dp/*.h))) $(addprefix $(INCLUDEDIR), $(subst iic/,,$(wildcard iic/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp1x/,,$(wildcard hdcp1x/*.h)))
+diff --git a/XilinxProcessorIPLib/drivers/dp12txss/src/Makefile b/XilinxProcessorIPLib/drivers/dp12txss/src/Makefile
+index 815e79c189..6723d5852f 100644
+--- a/XilinxProcessorIPLib/drivers/dp12txss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp12txss/src/Makefile
+@@ -28,19 +28,19 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: ./dp/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./vtc/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp1x/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./dualsplitter/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst dp/,,$(wildcard dp/*.h))) $(addprefix $(INCLUDEDIR), $(subst vtc/,,$(wildcard vtc/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp1x/,,$(wildcard hdcp1x/*.h))) $(addprefix $(INCLUDEDIR), $(subst dualsplitter/,,$(wildcard dualsplitter/*.h)))
+diff --git a/XilinxProcessorIPLib/drivers/dp14/src/Makefile b/XilinxProcessorIPLib/drivers/dp14/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/dp14/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp14/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dp14rxss/src/Makefile b/XilinxProcessorIPLib/drivers/dp14rxss/src/Makefile
+index 67779385db..64bfa4fe36 100644
+--- a/XilinxProcessorIPLib/drivers/dp14rxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp14rxss/src/Makefile
+@@ -28,19 +28,19 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: ./dp/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./iic/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp1x/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp22/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst dp/,,$(wildcard dp/*.h))) $(addprefix $(INCLUDEDIR), $(subst iic/,,$(wildcard iic/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp1x/,,$(wildcard hdcp1x/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp22/,,$(wildcard hdcp22/*.h)))
+diff --git a/XilinxProcessorIPLib/drivers/dp14txss/src/Makefile b/XilinxProcessorIPLib/drivers/dp14txss/src/Makefile
+index c083aa9afd..c214d17027 100644
+--- a/XilinxProcessorIPLib/drivers/dp14txss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dp14txss/src/Makefile
+@@ -28,22 +28,22 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: ./dp/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./vtc/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp1x/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./hdcp22/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: ./dualsplitter/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst dp/,,$(wildcard dp/*.h))) $(addprefix $(INCLUDEDIR), $(subst vtc/,,$(wildcard vtc/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp1x/,,$(wildcard hdcp1x/*.h))) $(addprefix $(INCLUDEDIR), $(subst hdcp22/,,$(wildcard hdcp22/*.h))) $(addprefix $(INCLUDEDIR), $(subst dualsplitter/,,$(wildcard dualsplitter/*.h)))
+diff --git a/XilinxProcessorIPLib/drivers/dphy/src/Makefile b/XilinxProcessorIPLib/drivers/dphy/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/dphy/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dphy/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dsi/src/Makefile b/XilinxProcessorIPLib/drivers/dsi/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/dsi/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dsi/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/dsitxss/src/Makefile b/XilinxProcessorIPLib/drivers/dsitxss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/dsitxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/dsitxss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/emaclite/src/Makefile b/XilinxProcessorIPLib/drivers/emaclite/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/emaclite/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/emaclite/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/emacps/src/Makefile b/XilinxProcessorIPLib/drivers/emacps/src/Makefile
+index be5fccbf83..a187d897f4 100644
+--- a/XilinxProcessorIPLib/drivers/emacps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/emacps/src/Makefile
+@@ -28,7 +28,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/gpio/src/Makefile b/XilinxProcessorIPLib/drivers/gpio/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/gpio/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/gpio/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/gpiops/src/Makefile b/XilinxProcessorIPLib/drivers/gpiops/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/gpiops/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/gpiops/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp1x/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp1x/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp1x/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp1x/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_cipher/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_cipher/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_cipher/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_cipher/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_cipher_dp/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_cipher_dp/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_cipher_dp/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_cipher_dp/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_common/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_common/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_common/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_common/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_mmult/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_mmult/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_mmult/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_mmult/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_rng/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_rng/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_rng/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_rng/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_rx/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_rx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_rx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_rx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_rx_dp/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_rx_dp/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_rx_dp/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_rx_dp/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_tx/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_tx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_tx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_tx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hdcp22_tx_dp/src/Makefile b/XilinxProcessorIPLib/drivers/hdcp22_tx_dp/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/hdcp22_tx_dp/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hdcp22_tx_dp/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/hwicap/src/Makefile b/XilinxProcessorIPLib/drivers/hwicap/src/Makefile
+index 6bb6c184a0..9382e5b62e 100755
+--- a/XilinxProcessorIPLib/drivers/hwicap/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/hwicap/src/Makefile
+@@ -24,7 +24,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/i2srx/src/Makefile b/XilinxProcessorIPLib/drivers/i2srx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/i2srx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/i2srx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/i2stx/src/Makefile b/XilinxProcessorIPLib/drivers/i2stx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/i2stx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/i2stx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/iic/src/Makefile b/XilinxProcessorIPLib/drivers/iic/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/iic/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/iic/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/iicps/src/Makefile b/XilinxProcessorIPLib/drivers/iicps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/iicps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/iicps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/intc/src/Makefile b/XilinxProcessorIPLib/drivers/intc/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/intc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/intc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/iomodule/src/Makefile b/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile b/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/llfifo/src/Makefile b/XilinxProcessorIPLib/drivers/llfifo/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/llfifo/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/llfifo/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/mbox/src/Makefile b/XilinxProcessorIPLib/drivers/mbox/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/mbox/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mbox/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/mcdma/src/Makefile b/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
+index bffa2f8e87..32e69edc34 100644
+--- a/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/mipicsiss/src/Makefile b/XilinxProcessorIPLib/drivers/mipicsiss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/mipicsiss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mipicsiss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/mpegtsmux/src/Makefile b/XilinxProcessorIPLib/drivers/mpegtsmux/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/mpegtsmux/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mpegtsmux/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/mutex/src/Makefile b/XilinxProcessorIPLib/drivers/mutex/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/mutex/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mutex/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/nandps/src/Makefile b/XilinxProcessorIPLib/drivers/nandps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/nandps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/nandps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/nandpsu/src/Makefile b/XilinxProcessorIPLib/drivers/nandpsu/src/Makefile
+index 6530e84318..fe0961ecb4 100644
+--- a/XilinxProcessorIPLib/drivers/nandpsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/nandpsu/src/Makefile
+@@ -34,7 +34,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ospipsv/src/Makefile b/XilinxProcessorIPLib/drivers/ospipsv/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/ospipsv/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ospipsv/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/pciepsu/src/Makefile b/XilinxProcessorIPLib/drivers/pciepsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/pciepsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/pciepsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/pmonpsv/src/Makefile b/XilinxProcessorIPLib/drivers/pmonpsv/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/pmonpsv/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/pmonpsv/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/prc/src/Makefile b/XilinxProcessorIPLib/drivers/prc/src/Makefile
+index 6bb6c184a0..9382e5b62e 100644
+--- a/XilinxProcessorIPLib/drivers/prc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/prc/src/Makefile
+@@ -24,7 +24,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/prd/src/Makefile b/XilinxProcessorIPLib/drivers/prd/src/Makefile
+index 6bb6c184a0..9382e5b62e 100644
+--- a/XilinxProcessorIPLib/drivers/prd/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/prd/src/Makefile
+@@ -24,7 +24,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/qspips/src/Makefile b/XilinxProcessorIPLib/drivers/qspips/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/qspips/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/qspips/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/qspipsu/src/Makefile b/XilinxProcessorIPLib/drivers/qspipsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/qspipsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/qspipsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/resetps/src/Makefile b/XilinxProcessorIPLib/drivers/resetps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/resetps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/resetps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/rfdc/src/Makefile b/XilinxProcessorIPLib/drivers/rfdc/src/Makefile
+index ab6afd51a9..026fcaebc6 100644
+--- a/XilinxProcessorIPLib/drivers/rfdc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/rfdc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D__BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D__BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/rtcpsu/src/Makefile b/XilinxProcessorIPLib/drivers/rtcpsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/rtcpsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/rtcpsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/scugic/src/Makefile b/XilinxProcessorIPLib/drivers/scugic/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/scugic/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/scugic/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/scutimer/src/Makefile b/XilinxProcessorIPLib/drivers/scutimer/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/scutimer/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/scutimer/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/scuwdt/src/Makefile b/XilinxProcessorIPLib/drivers/scuwdt/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/scuwdt/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/scuwdt/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sdi_common/src/Makefile b/XilinxProcessorIPLib/drivers/sdi_common/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sdi_common/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sdi_common/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sdiaud/src/Makefile b/XilinxProcessorIPLib/drivers/sdiaud/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sdiaud/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sdiaud/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sdps/src/Makefile b/XilinxProcessorIPLib/drivers/sdps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sdps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sdps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/spi/src/Makefile b/XilinxProcessorIPLib/drivers/spi/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/spi/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/spi/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/spips/src/Makefile b/XilinxProcessorIPLib/drivers/spips/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/spips/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/spips/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/srio/src/Makefile b/XilinxProcessorIPLib/drivers/srio/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/srio/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/srio/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sysmon/src/Makefile b/XilinxProcessorIPLib/drivers/sysmon/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sysmon/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sysmon/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sysmonpsu/src/Makefile b/XilinxProcessorIPLib/drivers/sysmonpsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sysmonpsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sysmonpsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/sysmonpsv/src/Makefile b/XilinxProcessorIPLib/drivers/sysmonpsv/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/sysmonpsv/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/sysmonpsv/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/tft/src/Makefile b/XilinxProcessorIPLib/drivers/tft/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/tft/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/tft/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/tmr_inject/src/Makefile b/XilinxProcessorIPLib/drivers/tmr_inject/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/tmr_inject/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/tmr_inject/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/tmr_manager/src/Makefile b/XilinxProcessorIPLib/drivers/tmr_manager/src/Makefile
+index 100ce24a20..3cb96074cd 100644
+--- a/XilinxProcessorIPLib/drivers/tmr_manager/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/tmr_manager/src/Makefile
+@@ -32,10 +32,10 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.S
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/tmrctr/src/Makefile b/XilinxProcessorIPLib/drivers/tmrctr/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/tmrctr/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/tmrctr/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/trafgen/src/Makefile b/XilinxProcessorIPLib/drivers/trafgen/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/trafgen/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/trafgen/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/ttcps/src/Makefile b/XilinxProcessorIPLib/drivers/ttcps/src/Makefile
+index eb496eaf51..cd2639898d 100644
+--- a/XilinxProcessorIPLib/drivers/ttcps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ttcps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/uartlite/src/Makefile b/XilinxProcessorIPLib/drivers/uartlite/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/uartlite/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/uartlite/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/uartns550/src/Makefile b/XilinxProcessorIPLib/drivers/uartns550/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/uartns550/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/uartns550/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/uartps/src/Makefile b/XilinxProcessorIPLib/drivers/uartps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/uartps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/uartps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/uartpsv/src/Makefile b/XilinxProcessorIPLib/drivers/uartpsv/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/uartpsv/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/uartpsv/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/usb/src/Makefile b/XilinxProcessorIPLib/drivers/usb/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/usb/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/usb/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/usbps/src/Makefile b/XilinxProcessorIPLib/drivers/usbps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/usbps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/usbps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/usbpsu/src/Makefile b/XilinxProcessorIPLib/drivers/usbpsu/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/usbpsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/usbpsu/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_axi4s_remap/src/Makefile b/XilinxProcessorIPLib/drivers/v_axi4s_remap/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_axi4s_remap/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_axi4s_remap/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_csc/src/Makefile b/XilinxProcessorIPLib/drivers/v_csc/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_csc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_csc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_deinterlacer/src/Makefile b/XilinxProcessorIPLib/drivers/v_deinterlacer/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_deinterlacer/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_deinterlacer/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_demosaic/src/Makefile b/XilinxProcessorIPLib/drivers/v_demosaic/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_demosaic/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_demosaic/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_frmbuf_rd/src/Makefile b/XilinxProcessorIPLib/drivers/v_frmbuf_rd/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_frmbuf_rd/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_frmbuf_rd/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_frmbuf_wr/src/Makefile b/XilinxProcessorIPLib/drivers/v_frmbuf_wr/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_frmbuf_wr/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_frmbuf_wr/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_gamma_lut/src/Makefile b/XilinxProcessorIPLib/drivers/v_gamma_lut/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_gamma_lut/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_gamma_lut/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hcresampler/src/Makefile b/XilinxProcessorIPLib/drivers/v_hcresampler/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hcresampler/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hcresampler/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmi_common/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmi_common/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmi_common/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmi_common/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmiphy1/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmiphy1/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmiphy1/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmiphy1/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmirx/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmirx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmirx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmirx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmirx1/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmirx1/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmirx1/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmirx1/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmirxss/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmirxss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmirxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmirxss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmirxss1/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmirxss1/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmirxss1/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmirxss1/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmitx/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmitx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmitx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmitx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmitx1/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmitx1/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmitx1/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmitx1/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmitxss/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmitxss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmitxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmitxss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hdmitxss1/src/Makefile b/XilinxProcessorIPLib/drivers/v_hdmitxss1/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hdmitxss1/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hdmitxss1/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_hscaler/src/Makefile b/XilinxProcessorIPLib/drivers/v_hscaler/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_hscaler/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_hscaler/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_letterbox/src/Makefile b/XilinxProcessorIPLib/drivers/v_letterbox/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_letterbox/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_letterbox/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_mix/src/Makefile b/XilinxProcessorIPLib/drivers/v_mix/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_mix/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_mix/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_multi_scaler/src/Makefile b/XilinxProcessorIPLib/drivers/v_multi_scaler/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_multi_scaler/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_multi_scaler/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_scenechange/src/Makefile b/XilinxProcessorIPLib/drivers/v_scenechange/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_scenechange/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_scenechange/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_sdirx/src/Makefile b/XilinxProcessorIPLib/drivers/v_sdirx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_sdirx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_sdirx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_sdirxss/src/Makefile b/XilinxProcessorIPLib/drivers/v_sdirxss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_sdirxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_sdirxss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_sditx/src/Makefile b/XilinxProcessorIPLib/drivers/v_sditx/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_sditx/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_sditx/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_sditxss/src/Makefile b/XilinxProcessorIPLib/drivers/v_sditxss/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_sditxss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_sditxss/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_tpg/src/Makefile b/XilinxProcessorIPLib/drivers/v_tpg/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_tpg/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_tpg/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_vcresampler/src/Makefile b/XilinxProcessorIPLib/drivers/v_vcresampler/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_vcresampler/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_vcresampler/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/v_vscaler/src/Makefile b/XilinxProcessorIPLib/drivers/v_vscaler/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/v_vscaler/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/v_vscaler/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/video_common/src/Makefile b/XilinxProcessorIPLib/drivers/video_common/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/video_common/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/video_common/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/vphy/src/Makefile b/XilinxProcessorIPLib/drivers/vphy/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/vphy/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/vphy/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/vprocss/src/Makefile b/XilinxProcessorIPLib/drivers/vprocss/src/Makefile
+index 8912b950ea..3b3b547e9c 100644
+--- a/XilinxProcessorIPLib/drivers/vprocss/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/vprocss/src/Makefile
+@@ -28,10 +28,10 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: ./vdma/%.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS)  $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst vdma/,,$(wildcard vdma/*.h)))
+diff --git a/XilinxProcessorIPLib/drivers/vtc/src/Makefile b/XilinxProcessorIPLib/drivers/vtc/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/vtc/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/vtc/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/wdtps/src/Makefile b/XilinxProcessorIPLib/drivers/wdtps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/wdtps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/wdtps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/wdttb/src/Makefile b/XilinxProcessorIPLib/drivers/wdttb/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/wdttb/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/wdttb/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/xadcps/src/Makefile b/XilinxProcessorIPLib/drivers/xadcps/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/xadcps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/xadcps/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/xdmapcie/src/Makefile b/XilinxProcessorIPLib/drivers/xdmapcie/src/Makefile
+index 5feeb49970..4f98f91dc5 100755
+--- a/XilinxProcessorIPLib/drivers/xdmapcie/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/xdmapcie/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/xxvethernet/src/Makefile b/XilinxProcessorIPLib/drivers/xxvethernet/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/xxvethernet/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/xxvethernet/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/XilinxProcessorIPLib/drivers/zdma/src/Makefile b/XilinxProcessorIPLib/drivers/zdma/src/Makefile
+index 5feeb49970..4f98f91dc5 100644
+--- a/XilinxProcessorIPLib/drivers/zdma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/zdma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+index 347e3ac6ea..1bef6215c4 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+@@ -50,13 +50,13 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ 
+ include $(wildcard ../../../../dep.mk)
+ $(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile b/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
+index 2c4d44653c..eeb265ea35 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/64bit/armclang/Makefile
+@@ -72,7 +72,7 @@ endif
+ 	${AS} --cpu=8-A.64 --fpu=fp-armv8 -o $*.o boot_post.s --depend=$*.d
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile b/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
+index d8ea48881d..0f65e277ae 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/64bit/gcc/Makefile
+@@ -54,13 +54,13 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ 
+ .PHONY: include
+diff --git a/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile b/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
+index d90ef8828b..75b1febe75 100644
+--- a/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexa9/gcc/Makefile
+@@ -56,10 +56,10 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ profile_libs:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" libs
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+index d2cc146ec4..1d9d80350f 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+@@ -84,7 +84,7 @@ endif
+ 	${AS} --cpu=Cortex-R5 -o $*.o cpu_init_post.s --depend=$*.d
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+index 5db2e712be..9cda6f341c 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+@@ -53,13 +53,13 @@ include $(wildcard $(ASSEMBLY_DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)_exit.o: _exit.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ 
+ .PHONY: include
+diff --git a/lib/bsp/standalone/src/microblaze/Makefile b/lib/bsp/standalone/src/microblaze/Makefile
+index bb50751d42..5fb54c8082 100644
+--- a/lib/bsp/standalone/src/microblaze/Makefile
++++ b/lib/bsp/standalone/src/microblaze/Makefile
+@@ -55,13 +55,13 @@ include $(wildcard ../../../../dep.mk)
+ 
+ $(NON_LTO_OBJECTS): $(NON_LTO_FILES)
+ 	echo "DEBUG NON_LTO_OBJECTS is $(NON_LTO_OBJECTS)"
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS_NO_FLTO) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.S
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(CC) $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ profile_libs:
+ 	$(MAKE) -C profile COMPILER_FLAGS="$(COMPILER_FLAGS)" EXTRA_COMPILER_FLAGS="$(EXTRA_COMPILER_FLAGS)" COMPILER="$(CC)" ARCHIVER="$(AR)" AS="$(AS)" libs
+diff --git a/lib/sw_services/xilffs/src/Makefile b/lib/sw_services/xilffs/src/Makefile
+index 4d1553b791..16017e7c16 100644
+--- a/lib/sw_services/xilffs/src/Makefile
++++ b/lib/sw_services/xilffs/src/Makefile
+@@ -42,7 +42,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(FATFS_DIR)%.o: $(FATFS_DIR)%.c
+-	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: libxilffs_includes
+diff --git a/lib/sw_services/xilfpga/src/Makefile b/lib/sw_services/xilfpga/src/Makefile
+index b86926922a..bf25907e6a 100644
+--- a/lib/sw_services/xilfpga/src/Makefile
++++ b/lib/sw_services/xilfpga/src/Makefile
+@@ -42,7 +42,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(XILFPGA_DIR)%.o: $(XILFPGA_DIR)%.c
+-	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $<
++	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+ include: libxilfpga_includes
+-- 
+2.17.1
+

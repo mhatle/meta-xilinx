@@ -1,0 +1,27 @@
+From 5bc3a526cd8cbea1d37052841df84fd97cea6e16 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:27:50 -0600
+Subject: [PATCH] Revert "Revert "mcdma: Add BAREMETAL identifier to the mcdma
+ makefile""
+
+This reverts commit 3dfb156ce7068057bc7530f9c1cc3adc610625a8.
+---
+ XilinxProcessorIPLib/drivers/mcdma/src/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/mcdma/src/Makefile b/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
+index 5feeb49970..bffa2f8e87 100644
+--- a/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/mcdma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+-- 
+2.17.1
+

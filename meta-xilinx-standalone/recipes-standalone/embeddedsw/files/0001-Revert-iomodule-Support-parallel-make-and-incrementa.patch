@@ -1,0 +1,74 @@
+From 0851aff4db367b4f8e842b1f66ed625b4ec2b453 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:52:07 -0600
+Subject: [PATCH] Revert "iomodule: Support parallel make and incremental
+ builds"
+
+This reverts commit 976dd5bee498df97d7ec68c3b301fe665869a519.
+---
+ .../drivers/iomodule/src/Makefile             | 35 ++++++++++---------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/iomodule/src/Makefile b/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
+index cd2639898d..a89ecd1b7b 100644
+--- a/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/iomodule/src/Makefile
+@@ -1,4 +1,3 @@
+-DRIVER_LIB_VERSION = 1.0
+ COMPILER=
+ ARCHIVER=
+ CP=cp
+@@ -9,31 +8,35 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
+-INCLUDES=-I./. -I$(INCLUDEDIR)
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
++INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
++OUTS = *.o
+ 
+-OBJECTS = $(addprefix $(RELEASEDIR), $(addsuffix .o, $(basename $(wildcard *.c))))
++LIBSOURCES:=*.c
++INCLUDEFILES:=*.h
+ 
+-libs: $(OBJECTS)
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ 
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
++libs: banner xiomodule_libs clean
+ 
+-include $(wildcard $(DEPFILES))
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-include $(wildcard ../../../../dep.mk)
++banner:
++	echo "Compiling iomodule"
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
++xiomodule_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: xiomodule_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++xiomodule_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf ${DEPFILES}
++
++
+-- 
+2.17.1
+

@@ -1,0 +1,27 @@
+From e4d045cd998a67eb53f50ae59f0d013cda8220ae Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:29:53 -0600
+Subject: [PATCH] Revert "axidma: Remove BAREMETAL identifier from axidma
+ makefile"
+
+This reverts commit 8b7a1a174275c78f59ed23946507106db0839b04.
+---
+ XilinxProcessorIPLib/drivers/axidma/src/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/axidma/src/Makefile b/XilinxProcessorIPLib/drivers/axidma/src/Makefile
+index 5feeb49970..bffa2f8e87 100644
+--- a/XilinxProcessorIPLib/drivers/axidma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/axidma/src/Makefile
+@@ -26,7 +26,7 @@ include $(wildcard $(DEPFILES))
+ include $(wildcard ../../../../dep.mk)
+ 
+ $(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) -D __BAREMETAL__ $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+-- 
+2.17.1
+

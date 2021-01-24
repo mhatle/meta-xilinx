@@ -1,0 +1,72 @@
+From cadc975674f99b8be07cac17dca62b0c407749b4 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 12:51:19 -0600
+Subject: [PATCH] Revert "uartps: Modify Makefile to support parallel make
+ execution"
+
+This reverts commit 9c3430a7a4b9416fe26ed7e5aa08b5e68c0b9186.
+---
+ .../drivers/uartps/src/Makefile               | 33 ++++++++++---------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/uartps/src/Makefile b/XilinxProcessorIPLib/drivers/uartps/src/Makefile
+index 4f98f91dc5..88b1e625cc 100644
+--- a/XilinxProcessorIPLib/drivers/uartps/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/uartps/src/Makefile
+@@ -1,4 +1,3 @@
+-DRIVER_LIB_VERSION = 1.0
+ COMPILER=
+ ARCHIVER=
+ CP=cp
+@@ -9,31 +8,33 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
+-INCLUDES=-I./. -I$(INCLUDEDIR)
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
++INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
++OUTS = *.o
+ 
+-OBJECTS = $(addprefix $(RELEASEDIR), $(addsuffix .o, $(basename $(wildcard *.c))))
++LIBSOURCES:=*.c
++INCLUDEFILES:=*.h
+ 
+-libs: $(OBJECTS)
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ 
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
++libs: banner xuartps_libs clean
+ 
+-include $(wildcard $(DEPFILES))
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-include $(wildcard ../../../../dep.mk)
++banner:
++	echo "Compiling uartps"
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
++xuartps_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: xuartps_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++xuartps_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-- 
+2.17.1
+

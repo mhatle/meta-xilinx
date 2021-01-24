@@ -1,0 +1,78 @@
+From c1458cf764151a6df341e1ede341a5c5e7899651 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 13:23:55 -0600
+Subject: [PATCH] Revert "BSP: Fix dependency files removal"
+
+This reverts commit 98873c02086f8ba989f340716b1a0a4e3f22954c.
+---
+ lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile | 4 ----
+ lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile | 5 +----
+ lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile    | 4 ----
+ lib/bsp/standalone/src/microblaze/Makefile          | 4 ----
+ 4 files changed, 1 insertion(+), 16 deletions(-)
+
+diff --git a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+index 1bef6215c4..097365cfa3 100644
+--- a/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/ARMv8/32bit/gcc/Makefile
+@@ -26,10 +26,6 @@ RELEASEDIR=../../../lib/
+ INCLUDEDIR=../../../include/
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+ OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out _exit.c, $(wildcard *.c)))))
+ ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+ NON_LTO_OBJECTS = $(addprefix $(RELEASEDIR),$(addsuffix .o,$(basename _exit.c)))
+diff --git a/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile b/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
+index 994854ab28..9e3cf6ee12 100644
+--- a/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexa9/iccarm/Makefile
+@@ -24,11 +24,8 @@ RELEASEDIR=../../../lib/
+ INCLUDEDIR=../../../include/
+ 
+ INCLUDES=-I./. -I${INCLUDEDIR}
+-INCLUDEFILES=*.h
+-
+-SRCFILES:=$(wildcard *.c)
+ 
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
++INCLUDEFILES=*.h
+ 
+ OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+ OBJECTS +=	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.s))))
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+index 9cda6f341c..23e54ae1c1 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/gcc/Makefile
+@@ -26,10 +26,6 @@ RELEASEDIR=../../../lib/
+ INCLUDEDIR=../../../include/
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+ OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out _exit.c, $(wildcard *.c)))))
+ ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+ 
+diff --git a/lib/bsp/standalone/src/microblaze/Makefile b/lib/bsp/standalone/src/microblaze/Makefile
+index 5fb54c8082..2229f07654 100644
+--- a/lib/bsp/standalone/src/microblaze/Makefile
++++ b/lib/bsp/standalone/src/microblaze/Makefile
+@@ -24,10 +24,6 @@ RELEASEDIR=../../../lib/
+ INCLUDEDIR=../../../include/
+ INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+-
+ OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(filter-out $(wildcard microblaze_interrupt_handler.c), $(wildcard *.c)))))
+ 
+ ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+-- 
+2.17.1
+

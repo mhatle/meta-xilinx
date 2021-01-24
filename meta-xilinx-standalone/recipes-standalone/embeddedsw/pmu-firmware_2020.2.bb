@@ -1,19 +1,12 @@
 inherit deploy
 
-LICENSE = "Proprietary"
-LIC_FILES_CHKSUM = "file://license.txt;md5=39ab6ab638f4d1836ba994ec6852de94"
-
-SRCREV = "e8db5fb118229fdc621e0ec7848641a23bf60998"
-PV = "${XILINX_RELEASE_VERSION}+git${SRCPV}"
-
-SRC_URI = "git://github.com/Xilinx/embeddedsw.git;protocol=https;nobranch=1"
+require embeddedsw.inc
 
 COMPATIBLE_HOST = "microblaze.*-elf"
-COMPATIBLE_MACHINE = "versal-mb"
-
+COMPATIBLE_MACHINE = "microblaze-pmu"
 
 S = "${WORKDIR}/git"
-B = "${S}/lib/sw_apps/versal_psmfw/src"
+B = "${S}/lib/sw_apps/zynqmp_pmufw/src"
 
 # The makefile does not handle parallelization
 PARALLEL_MAKE = ""
@@ -29,8 +22,8 @@ COMPILER_FLAGS = "-O2 -c"
 EXTRA_COMPILER_FLAGS = "-g -Wall -Wextra -Os -flto -ffat-lto-objects"
 ARCHIVER = "${AR}"
 
-BSP_DIR ?= "${B}/../misc/versal_psmfw_bsp"
-BSP_TARGETS_DIR ?= "${BSP_DIR}/psv_psm_0/libsrc"
+BSP_DIR ?= "${B}/../misc/zynqmp_pmufw_bsp"
+BSP_TARGETS_DIR ?= "${BSP_DIR}/psu_pmu_0/libsrc"
 
 def bsp_make_vars(d):
     s = ["COMPILER", "CC", "COMPILER_FLAGS", "EXTRA_COMPILER_FLAGS", "ARCHIVER", "AR", "AS"]
@@ -55,16 +48,14 @@ do_install() {
     :
 }
 
-PSM_FIRMWARE_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}-${DATETIME}"
-PSM_FIRMWARE_BASE_NAME[vardepsexclude] = "DATETIME"
+PMU_FIRMWARE_BASE_NAME ?= "${BPN}-${PKGE}-${PKGV}-${PKGR}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
 
 do_deploy() {
-    install -Dm 0644 ${B}/psmfw.elf ${DEPLOYDIR}/${PSM_FIRMWARE_BASE_NAME}.elf
-    ln -sf ${PSM_FIRMWARE_BASE_NAME}.elf ${DEPLOYDIR}/${BPN}-${MACHINE}.elf
-    ${OBJCOPY} -O binary ${B}/psmfw.elf ${B}/psmfw.bin
-    install -m 0644 ${B}/psmfw.bin ${DEPLOYDIR}/${PSM_FIRMWARE_BASE_NAME}.bin
-    ln -sf ${PSM_FIRMWARE_BASE_NAME}.bin ${DEPLOYDIR}/${BPN}-${MACHINE}.bin
+    install -Dm 0644 ${B}/executable.elf ${DEPLOYDIR}/${PMU_FIRMWARE_BASE_NAME}.elf
+    ln -sf ${PMU_FIRMWARE_BASE_NAME}.elf ${DEPLOYDIR}/${BPN}-${MACHINE}.elf
+    ${OBJCOPY} -O binary ${B}/executable.elf ${B}/executable.bin
+    install -m 0644 ${B}/executable.bin ${DEPLOYDIR}/${PMU_FIRMWARE_BASE_NAME}.bin
+    ln -sf ${PMU_FIRMWARE_BASE_NAME}.bin ${DEPLOYDIR}/${BPN}-${MACHINE}.bin
 }
 
 addtask deploy before do_build after do_install
-

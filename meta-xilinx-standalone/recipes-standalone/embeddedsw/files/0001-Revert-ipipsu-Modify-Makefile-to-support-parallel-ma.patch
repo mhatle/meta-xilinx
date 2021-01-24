@@ -1,0 +1,85 @@
+From 135312fec92ccadcf6c7ca40891643b75b32b12c Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 13:46:28 -0600
+Subject: [PATCH] Revert "ipipsu: Modify Makefile to support parallel make
+ execution"
+
+This reverts commit d985470a424ef2c12c2880d8cd094cc519df5b8d.
+---
+ .../drivers/ipipsu/src/Makefile               | 33 ++++++++++---------
+ .../drivers/ipipsu/src/xipipsu.h              |  1 -
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile b/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
+index 4f98f91dc5..3e1fc71f74 100644
+--- a/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/ipipsu/src/Makefile
+@@ -1,4 +1,3 @@
+-DRIVER_LIB_VERSION = 1.0
+ COMPILER=
+ ARCHIVER=
+ CP=cp
+@@ -9,31 +8,33 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
+-INCLUDES=-I./. -I$(INCLUDEDIR)
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
++INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
++OUTS = *.o
+ 
+-OBJECTS = $(addprefix $(RELEASEDIR), $(addsuffix .o, $(basename $(wildcard *.c))))
++LIBSOURCES:=*.c
++INCLUDEFILES:=*.h
+ 
+-libs: $(OBJECTS)
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ 
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
++libs: banner xipipsu_libs clean
+ 
+-include $(wildcard $(DEPFILES))
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-include $(wildcard ../../../../dep.mk)
++banner:
++	echo "Compiling ipipsu"
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
++xipipsu_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: xipipsu_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++xipipsu_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+diff --git a/XilinxProcessorIPLib/drivers/ipipsu/src/xipipsu.h b/XilinxProcessorIPLib/drivers/ipipsu/src/xipipsu.h
+index 619640c8c7..e3375308a1 100644
+--- a/XilinxProcessorIPLib/drivers/ipipsu/src/xipipsu.h
++++ b/XilinxProcessorIPLib/drivers/ipipsu/src/xipipsu.h
+@@ -69,7 +69,6 @@
+  * 2.5  sdd 12/17/18  Add the cpp extern macro.
+  * 2.6  sdd 04/09/20  Restructure the code for modularity and readability
+  * 		      Added file  xipipsu_buf.c and xipipsu_buf.h as part of it.
+- * 2.7  sdd 09/03/20  Makefile update for parallel execution.
+  * </pre>
+  *
+  *****************************************************************************/
+-- 
+2.17.1
+

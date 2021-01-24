@@ -1,0 +1,72 @@
+From 649533959f1571095c50d095c7f27121c42bbf5f Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 13:35:52 -0600
+Subject: [PATCH] Revert "csudma: Update Makefile to support parallel make
+ execution"
+
+This reverts commit 12c5c0684eebc915cd5b633e7583a6a1085446c6.
+---
+ .../drivers/csudma/src/Makefile               | 33 ++++++++++---------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/csudma/src/Makefile b/XilinxProcessorIPLib/drivers/csudma/src/Makefile
+index 4f98f91dc5..778797bcf5 100644
+--- a/XilinxProcessorIPLib/drivers/csudma/src/Makefile
++++ b/XilinxProcessorIPLib/drivers/csudma/src/Makefile
+@@ -1,4 +1,3 @@
+-DRIVER_LIB_VERSION = 1.0
+ COMPILER=
+ ARCHIVER=
+ CP=cp
+@@ -9,31 +8,33 @@ LIB=libxil.a
+ CC_FLAGS = $(COMPILER_FLAGS)
+ ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
+ 
+-RELEASEDIR=../../../lib/
+-INCLUDEDIR=../../../include/
+-INCLUDES=-I./. -I$(INCLUDEDIR)
++RELEASEDIR=../../../lib
++INCLUDEDIR=../../../include
++INCLUDES=-I./. -I${INCLUDEDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
++OUTS = *.o
+ 
+-OBJECTS = $(addprefix $(RELEASEDIR), $(addsuffix .o, $(basename $(wildcard *.c))))
++LIBSOURCES:=*.c
++INCLUDEFILES:=*.h
+ 
+-libs: $(OBJECTS)
++OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ 
+-DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
++libs: banner csudma_libs clean
+ 
+-include $(wildcard $(DEPFILES))
++%.o: %.c
++	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+-include $(wildcard ../../../../dep.mk)
++banner:
++	echo "Compiling csudma"
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $(realpath $<) -o $@
++csudma_libs: ${OBJECTS}
++	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS}
+ 
+ .PHONY: include
+-include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
++include: csudma_includes
+ 
+-$(INCLUDEDIR)%.h: %.h
+-	$(CP) $< $@
++csudma_includes:
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-- 
+2.17.1
+

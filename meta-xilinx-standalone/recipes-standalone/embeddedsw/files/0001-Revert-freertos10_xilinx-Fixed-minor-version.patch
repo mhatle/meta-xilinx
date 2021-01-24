@@ -1,0 +1,26 @@
+From 377bea1ad4c032d6456f0f31fe4242d4bc26014d Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:08:54 -0600
+Subject: [PATCH] Revert "freertos10_xilinx: Fixed minor version"
+
+This reverts commit 9af50111043b32a5b73e0b1bad3c27afed75e0f9.
+---
+ ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
+index 8a890cfc12..00f370f347 100644
+--- a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
++++ b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
+@@ -33,7 +33,7 @@ OPTION DRC = FreeRTOS_drc ;
+ OPTION supported_peripherals =  (microblaze ps7_cortexa9 psu_cortexr5 psv_cortexr5 psu_cortexa53 psv_cortexa72);
+ OPTION COPYFILES = all;
+ OPTION NAME = freertos10_xilinx;
+-OPTION VERSION = 1.7;
++OPTION VERSION = 1.8;
+ OPTION DEPENDS = (standalone_v7_3);
+ OPTION APP_LINKER_FLAGS = "-Wl,--start-group,-lxil,-lfreertos,-lgcc,-lc,--end-group";
+ OPTION DESC = "This Xilinx FreeRTOS port is based on FreeRTOS kernel version 10.3.0";
+-- 
+2.17.1
+

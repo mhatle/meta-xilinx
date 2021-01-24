@@ -1,0 +1,29 @@
+From e779b6d33c9e655acb5b0ab395c04b7f3d71c473 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 14:02:36 -0600
+Subject: [PATCH] Revert "lib: bsp: armclang: r5: Fix compilation issue with
+ parallel Makefile change"
+
+This reverts commit 330fa59a86748e08753933120780dc6f3c35b0fc.
+---
+ lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+index 1d9d80350f..b704f27a3a 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/armclang/Makefile
+@@ -83,8 +83,8 @@ ifeq ($(findstring cpu_init.S,$(wildcard *.S)),cpu_init.S)
+ endif
+ 	${AS} --cpu=Cortex-R5 -o $*.o cpu_init_post.s --depend=$*.d
+ 
+-$(RELEASEDIR)%.o: %.c
+-	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
++%.o: %.c
++	${COMPILER} -c $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) -o $@ $<
+ 
+ .PHONY: include
+ include: $(addprefix $(INCLUDEDIR),$(wildcard *.h)) $(addprefix $(INCLUDEDIR), $(subst includes_ps/,,$(wildcard includes_ps/*.h)))
+-- 
+2.17.1
+

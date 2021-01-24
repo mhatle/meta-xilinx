@@ -1,0 +1,31 @@
+From 7bf45cd9709248f19ea616e3166108c8b0759349 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 13:55:40 -0600
+Subject: [PATCH] Revert "BSP: cortexr5: iccarm: Use correct suffix to point to
+ assembly objects"
+
+This reverts commit dbc8c79ff918b094450b7173061a1717a2daae01.
+---
+ lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile b/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
+index bb520129d5..c21c81d435 100644
+--- a/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
++++ b/lib/bsp/standalone/src/arm/cortexr5/iccarm/Makefile
+@@ -27,10 +27,10 @@ INCLUDEFILES=*.h
+ 
+ SRCFILES:=$(wildcard *.c)
+ 
+-ASSEMBLY_SRCFILES:=$(wildcard *.s)
++ASSEMBLY_SRCFILES:=$(wildcard *.S)
+ 
+ OBJECTS =	$(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.c))))
+-ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.s))))
++ASSEMBLY_OBJECTS  = $(addprefix $(RELEASEDIR),$(addsuffix .o, $(basename $(wildcard *.S))))
+ 
+ 
+ libs: $(LIBS)
+-- 
+2.17.1
+

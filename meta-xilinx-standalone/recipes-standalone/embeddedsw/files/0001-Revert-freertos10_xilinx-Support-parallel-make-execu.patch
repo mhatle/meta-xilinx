@@ -1,0 +1,442 @@
+From 31b0301814a7d1d116b008e301a62398317883c0 Mon Sep 17 00:00:00 2001
+From: Mark Hatle <mark.hatle@kernel.crashing.org>
+Date: Sun, 24 Jan 2021 11:59:31 -0600
+Subject: [PATCH] Revert "freertos10_xilinx: Support parallel make execution"
+
+This reverts commit 7cf72d034684ead12e736704434609ed99816c58.
+---
+ .../data/freertos10_xilinx.mld                |  2 +-
+ .../data/freertos10_xilinx.tcl                | 12 +--
+ .../freertos10_xilinx/src/Makefile_microblaze | 86 +++++++++++--------
+ .../src/Makefile_ps7_cortexa9                 | 49 ++++-------
+ .../src/Makefile_psu_cortexa53                | 48 +++--------
+ .../src/Makefile_psu_cortexr5                 | 51 ++++-------
+ 6 files changed, 97 insertions(+), 151 deletions(-)
+
+diff --git a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
+index 00f370f347..8a890cfc12 100644
+--- a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
++++ b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.mld
+@@ -33,7 +33,7 @@ OPTION DRC = FreeRTOS_drc ;
+ OPTION supported_peripherals =  (microblaze ps7_cortexa9 psu_cortexr5 psv_cortexr5 psu_cortexa53 psv_cortexa72);
+ OPTION COPYFILES = all;
+ OPTION NAME = freertos10_xilinx;
+-OPTION VERSION = 1.8;
++OPTION VERSION = 1.7;
+ OPTION DEPENDS = (standalone_v7_3);
+ OPTION APP_LINKER_FLAGS = "-Wl,--start-group,-lxil,-lfreertos,-lgcc,-lc,--end-group";
+ OPTION DESC = "This Xilinx FreeRTOS port is based on FreeRTOS kernel version 10.3.0";
+diff --git a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.tcl b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.tcl
+index a2461b4319..85e5ba8527 100644
+--- a/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.tcl
++++ b/ThirdParty/bsp/freertos10_xilinx/data/freertos10_xilinx.tcl
+@@ -162,9 +162,7 @@ proc generate {os_handle} {
+ 				}
+ 
+ 				foreach entry [glob -nocomplain [file join $armr5gccdir *]] {
+-					if { [string first "asm_vectors" $entry] == -1} {
+-						file copy -force $entry [file join ".." "${standalone_version}" "src"]
+-					}
++					file copy -force $entry [file join ".." "${standalone_version}" "src"]
+ 				}
+ 
+ 				file copy -force $includedir "../${standalone_version}/src/"
+@@ -221,9 +219,7 @@ proc generate {os_handle} {
+ 				}
+ 
+ 				foreach entry [glob -nocomplain [file join $arma5364gccdir *]] {
+-					if { [string first "asm_vectors" $entry] == -1} {
+-						file copy -force $entry [file join ".." "${standalone_version}" "src"]
+-					}
++					file copy -force $entry [file join ".." "${standalone_version}" "src"]
+ 				}
+ 
+ 				if { $proctype == "psu_cortexa53" } {
+@@ -273,9 +269,7 @@ proc generate {os_handle} {
+ 				}
+ 
+ 				foreach entry [glob -nocomplain -types f [file join $arma9gccdir *]] {
+-					if { [string first "asm_vectors" $entry] == -1} {
+-						file copy -force $entry [file join ".." "${standalone_version}" "src"]
+-					}
++					file copy -force $entry [file join ".." "${standalone_version}" "src"]
+ 				}
+ 
+ 				set need_config_file "true"
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
+index 4b53ef83ca..92f0bc5b62 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_microblaze
+@@ -32,9 +32,6 @@
+ # Processor architecture
+ # microblaze
+ #
+-
+-DRIVER_LIB_VERSION = v1.0
+-
+ ARCH = microblaze
+ 
+ SYSTEMDIR = ../../..
+@@ -71,57 +68,72 @@ INCLUDEFILES =	${TOPDIR}/*.h
+ INCLUDES = -I$(INCLUDEDIR) \
+ 	-I${TOPDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
++KERNEL_AR_OBJS = *.c *.S
+ 
+ OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ 
+ STANDALONE_VERSION = $(wildcard ../../standalone*)
+ 
+-libs: $(LIBFREERTOS) standalone_lib
+-
+-$(LIBFREERTOS): $(OBJECTS) $(ASSEMBLY_OBJECTS)
+-	@$(ARCHIVER) -r ${LIBFREERTOS} $^
+-
+-standalone_lib:
+-
++libs:	$(KERNEL_AR_OBJS)
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src libs
++	@echo "Compiling FreeRTOS"
++	@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $^
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${OBJECTS}
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${ASSEMBLY_OBJECTS}
++	@$(ARCHIVER) -d ${LIBXIL} asm_vectors.o
++	@$(ARCHIVER) -s ${LIBXIL}
+ 
+-DEPFILES := $(SRCFILES:%.c=%.d)
+-
+-include $(wildcard $(DEPFILES))
++	make clean
+ 
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=%.d)
+ 
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+ 
+-include $(wildcard ../../../../dep.mk)
+-
+-
+-%.o: %.S
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-%.o: %.c
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-.PHONY: include
+-include: freertos_include include_standalone
+ 
+ include_standalone:
+ 	@echo "includes"
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	$(CP) -rf $(INCLUDEFILES) $(INCLUDEDIR)
+ 
+ 
+-freertos_include: $(addprefix $(INCLUDEDIR)/,$(wildcard *.h))
+-
+-$(INCLUDEDIR)/%.h: %.h
+-	$(CP) $< $@
++.PHONY: include
++include:
++	@echo "include"
++	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+-	$(MAKE) -f Makefile_depends -C ${STANDALONE_VERSION}/src -s clean
+-	rm -rf $(LIBFREERTOS)
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
++
++
++
++
++
++#PROCESSOR = microblaze_0
++#LIBRARIES = ${PROCESSOR}/lib/libxil.a
++#BSP_MAKEFILES := $(wildcard $(PROCESSOR)/libsrc/*/src/Makefile)
++#SUBDIRS := $(patsubst %/Makefile, %, $(BSP_MAKEFILES))
++#
++#ifneq (,$(findstring win,$(RDI_PLATFORM)))
++# SHELL = CMD
++#endif
++#
++#all: libs
++#	@echo 'Finished building libraries'
++#
++#include: $(addsuffix /make.include,$(SUBDIRS))
++#
++#libs: $(addsuffix /make.libs,$(SUBDIRS))
++#
++#$(PROCESSOR)/lib/libxil.a: $(PROCESSOR)/lib/libxil_init.a
++#	cp -f $< $@
++#
++#%/make.include: $(if $(wildcard $(PROCESSOR)/lib/libxil_init.a),$(PROCESSOR)/lib/libxil.a,)
++#	@echo "Running Make include in $(subst /make.include,,$@)"
++#	$(MAKE) -C $(subst /make.include,,$@) -s include  "SHELL=$(SHELL)" "COMPILER=mb-gcc" "ARCHIVER=mb-ar" "COMPILER_FLAGS= -O2 -c -mcpu=v9.4 -mhard-float -mlittle-endian #-mno-xl-soft-div -mno-xl-soft-mul -mxl-barrel-shift -mxl-float-convert -mxl-float-sqrt -mxl-multiply-high -mxl-pattern-compare" "EXTRA_COMPILER_FLAGS=-g -ffunction-sections #-fdata-sections"
++#
++#%/make.libs: include
++#	@echo "Running Make libs in $(subst /make.libs,,$@)"
++#	$(MAKE) -C $(subst /make.libs,,$@) -s libs  "SHELL=$(SHELL)" "COMPILER=mb-gcc" "ARCHIVER=mb-ar" "COMPILER_FLAGS= -O2 -c -mcpu=v9.4 -mhard-float -mlittle-endian #-mno-xl-soft-div -mno-xl-soft-mul -mxl-barrel-shift -mxl-float-convert -mxl-float-sqrt -mxl-multiply-high -mxl-pattern-compare" "EXTRA_COMPILER_FLAGS=-g -ffunction-sections #-fdata-sections"
++#
++#clean:
++#	rm -f ${PROCESSOR}/lib/libxil.a
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
+index b86fbfa851..befa8b3a01 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_ps7_cortexa9
+@@ -32,9 +32,6 @@
+ # Processor architecture
+ # ps7_cortexa9
+ #
+-
+-DRIVER_LIB_VERSION = v1.0
+-
+ ARCH = ps7_cortexa9
+ 
+ SYSTEMDIR = ../../..
+@@ -71,55 +68,39 @@ INCLUDEFILES =	${TOPDIR}/*.h
+ INCLUDES = -I$(INCLUDEDIR) \
+ 	-I${TOPDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
++KERNEL_AR_OBJS = *.c *.S
+ 
+ OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ 
+ STANDALONE_VERSION = $(wildcard ../../standalone*)
+ 
+-libs: $(LIBFREERTOS) standalone_lib
+-
+-$(LIBFREERTOS): $(OBJECTS) $(ASSEMBLY_OBJECTS)
+-	@$(ARCHIVER) -r ${LIBFREERTOS} $^
+-
+-standalone_lib:
+ 
++libs:	$(KERNEL_AR_OBJS)
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src libs
++	@echo "Compiling FreeRTOS"
++	@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $^
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${OBJECTS}
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${ASSEMBLY_OBJECTS}
++	@$(ARCHIVER) -d ${LIBXIL} asm_vectors.o
++	@$(ARCHIVER) -s ${LIBXIL}
+ 
+-DEPFILES := $(SRCFILES:%.c=%.d)
+-
+-include $(wildcard $(DEPFILES))
++	make clean
+ 
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=%.d)
+ 
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+ 
+-include $(wildcard ../../../../dep.mk)
+ 
+-%.o: %.S
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-
+-%.o: %.c
+-		@$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES)  $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-.PHONY: include
+-include: freertos_include include_standalone
+ include_standalone:
+ 	@echo "includes"
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	$(CP) -rf $(INCLUDEFILES) $(INCLUDEDIR)
+ 
+-freertos_include: $(addprefix $(INCLUDEDIR)/,$(wildcard *.h))
+ 
+-$(INCLUDEDIR)/%.h: %.h
+-	$(CP) $< $@
++.PHONY: include
++include:
++	@echo "include"
++	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+-	$(MAKE) -f Makefile_depends -C ${STANDALONE_VERSION}/src -s clean
+-	rm -rf $(LIBFREERTOS)
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
+index 3d8002850b..47d815bf1e 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexa53
+@@ -32,9 +32,6 @@
+ # Processor architecture
+ # psu_cortexa53
+ #
+-
+-DRIVER_LIB_VERSION = v1.0
+-
+ ARCH = psu_cortexa53
+ 
+ SYSTEMDIR = ../../..
+@@ -80,53 +77,36 @@ INCLUDES = -I$(INCLUDEDIR) \
+ 
+ KERNEL_AR_OBJS = *.c *.S
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
+ OBJECTS =       $(addsuffix .o, $(basename $(wildcard *.c)))
+ ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ 
+ STANDALONE_VERSION = $(wildcard ../../standalone*)
+ 
+-libs: $(LIBFREERTOS) standalone_lib
+-
+-$(LIBFREERTOS): $(OBJECTS) $(ASSEMBLY_OBJECTS)
+-	@$(ARCHIVER) -r ${LIBFREERTOS} $^
+-
+-
+-standalone_lib:
++libs:	$(KERNEL_AR_OBJS)
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src libs
++	@echo "Compiling FreeRTOS"
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $^
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${OBJECTS}
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${ASSEMBLY_OBJECTS}
++	@$(ARCHIVER) -d ${LIBXIL} asm_vectors.o
++	@$(ARCHIVER) -s ${LIBXIL}
+ 
+-DEPFILES := $(SRCFILES:%.c=%.d)
++	make clean
+ 
+-include $(wildcard $(DEPFILES))
+ 
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=%.d)
+ 
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+ 
+-include $(wildcard ../../../../dep.mk)
++include_standalone:
++	@echo "includes"
++	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	$(CP) -rf $(INCLUDEFILES) $(INCLUDEDIR)
+ 
+-%.o: %.S
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-%.o: %.c
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) -march=armv8-a $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+ 
+ .PHONY: include
+-include: freertos_include include_standalone
+-
+-include_standalone:
++include:
+ 	@echo "include"
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
+-
+-freertos_include: $(addprefix $(INCLUDEDIR)/,$(wildcard *.h))
+-
+-$(INCLUDEDIR)/%.h: %.h
+-	$(CP) $< $@
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+-	$(MAKE) -f Makefile_depends -C ${STANDALONE_VERSION}/src -s clean
+-	rm -rf $(LIBFREERTOS)
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+diff --git a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5 b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
+index 4b59f94592..fd15057a76 100755
+--- a/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
++++ b/ThirdParty/bsp/freertos10_xilinx/src/Makefile_psu_cortexr5
+@@ -32,9 +32,6 @@
+ # Processor architecture
+ # ps7_cortexa9
+ #
+-
+-DRIVER_LIB_VERSION = v1.0
+-
+ ARCH = psu_cortexr5
+ 
+ SYSTEMDIR = ../../..
+@@ -81,56 +78,38 @@ INCLUDEFILES =	${TOPDIR}/*.h
+ INCLUDES = -I$(INCLUDEDIR) \
+ 	-I${TOPDIR}
+ 
+-SRCFILES:=$(wildcard *.c)
+-
+-ASSEMBLY_SRCFILES:=$(wildcard *.S)
++KERNEL_AR_OBJS = *.c *.S
+ 
+ OBJECTS =	$(addsuffix .o, $(basename $(wildcard *.c)))
+ ASSEMBLY_OBJECTS  = $(addsuffix .o, $(basename $(wildcard *.S)))
+ 
+ STANDALONE_VERSION = $(wildcard ../../standalone*)
+ 
+-libs: $(LIBFREERTOS) standalone_lib
+-
+-$(LIBFREERTOS): $(OBJECTS) $(ASSEMBLY_OBJECTS)
+-	@$(ARCHIVER) -r ${LIBFREERTOS} $^
+-
+-
+-standalone_lib:
++libs:	$(KERNEL_AR_OBJS)
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src libs
++	@echo "Compiling FreeRTOS"
++	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $^
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${OBJECTS}
++	@$(ARCHIVER) -r ${LIBFREERTOS} ${ASSEMBLY_OBJECTS}
++	@$(ARCHIVER) -d ${LIBXIL} asm_vectors.o
++	@$(ARCHIVER) -s ${LIBXIL}
+ 
+-DEPFILES := $(SRCFILES:%.c=%.d)
+-
+-include $(wildcard $(DEPFILES))
++	make clean
+ 
+-ASSEMBLY_DEPFILES := $(ASSEMBLY_SRCFILES:%.S=%.d)
+ 
+-include $(wildcard $(ASSEMBLY_DEPFILES))
+ 
+-include $(wildcard ../../../../dep.mk)
+-
+-%.o: %.S
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-
+-%.o: %.c
+-	@$(COMPILER) $(COMPILER_FLAGS) $(CC_FLAG) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) -o $@ $(realpath $<)
+-
+-.PHONY: include
+-include: freertos_include include_standalone
+ 
+ include_standalone:
+ 	@echo "includes"
+ 	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	$(CP) -rf $(INCLUDEFILES) $(INCLUDEDIR)
+ 
+-freertos_include: $(addprefix $(INCLUDEDIR)/,$(wildcard *.h))
+ 
+-$(INCLUDEDIR)/%.h: %.h
+-	$(CP) $< $@
++.PHONY: include
++include:
++	@echo "include"
++	$(MAKE) -f Makefile_depends -e "COMPILER_FLAGS=$(COMPILER_FLAGS)" "EXTRA_COMPILER_FLAGS=$(EXTRA_COMPILER_FLAGS)" -C ${STANDALONE_VERSION}/src include
++	${CP} ${INCLUDEFILES} ${INCLUDEDIR}
+ 
+ clean:
+-	$(MAKE) -f Makefile_depends -C ${STANDALONE_VERSION}/src -s clean
+-	rm -rf $(LIBFREERTOS)
+ 	rm -rf ${OBJECTS}
+-	rm -rf $(DEPFILES)
+-	rm -rf $(ASSEMBLY_DEPFILES)
+-- 
+2.17.1
+
